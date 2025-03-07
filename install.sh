@@ -10,24 +10,24 @@ for usuario in /home/*; do
 done
 
 if [ $EXISTE -eq 1 ]; then
-    echo "SENSE ya esta instalado"
+    echo "SENSE is already installed"
     exit 1
 fi
 
 Salir=0
 while [ $Salir -eq 0 ]; do
-    	echo "¿Estás seguro que quieres instalar SENSE? (si/no)"
+    	echo "Are you sure you want to install SENSE (y/n)?"
     	read Respuesta
     	Respuesta=$(echo "$Respuesta" | tr 'A-Z' 'a-z')  # Convertir a minúsculas
-    	if [[ "$Respuesta" == "si" || "$Respuesta" == "no" ]]; then
+    	if [[ "$Respuesta" == "y" || "$Respuesta" == "n" ]]; then
         	Salir=1
     	else
-        	echo "Solo se admite si/no"
+        	echo "Only y/n is allowed"
     	fi
 done
 
-if [ "$Respuesta" = "si" ]; then
-    	echo "Creando carpetas..."
+if [ "$Respuesta" = "y" ]; then
+    	echo "Creating folders..."
     	REPO_URL="https://github.com/nasratullahjabarkhil/Sense-OS-manual"
 	WALLPAPER_URL="https://github.com/Diego-Santos-M/SENSE-PACKS.git"
     	for usuario in /home/*; do
@@ -35,19 +35,22 @@ if [ "$Respuesta" = "si" ]; then
         	WALLPAPER_CARPETA="$CARPETA_USUARIO/Wallpapers"
 		ARCHIVOS_DEL_PROGRAMA="$CARPETA_USUARIO/Program_Files"
         	mkdir -p "$CARPETA_USUARIO"
-        	echo "Carpeta creada en: $CARPETA_USUARIO"
+        	echo "Folder created in: $CARPETA_USUARIO"
 
+		echo "Downloading files..."
         	while true; do
             		git clone "$REPO_URL" "$CARPETA_USUARIO"
             		if [ -f "$CARPETA_USUARIO/index.html" ]; then
-                		echo "Repositorio clonado en: $CARPETA_USUARIO"
+                		echo "Files downloaded in: $CARPETA_USUARIO"
                 		break
             		else
                 		rm -rf "$CARPETA_USUARIO"
             		fi
         	done
+		echo "Creating subfolders"
 		mkdir -p "$WALLPAPER_CARPETA"
-		echo "Subcarpeta Wallpapers creada"
+		echo "Subfolder created"
+		echo "Downloading images...."
 		while true; do
                         git clone "$WALLPAPER_URL" "$CARPETA_USUARIO/Wallpapers"
 			ZIP_FILE=$(find "$CARPETA_USUARIO/Wallpapers" -name "*.zip" | head -n 1)
@@ -58,14 +61,14 @@ if [ "$Respuesta" = "si" ]; then
     			fi
 
                         if [ -f "$CARPETA_USUARIO/Wallpapers/Wallpaper/Leonardo_Phoenix_09_Design_a_logo_for_SENSE_a_Unixbased_operat_3.jpg" ]; then
-                                echo "Repositorio clonado"
+                                echo "Downloaded and decompressed images"
                                 break
                         else
                                 rm -rf "$CARPETA_USUARIO/Wallpapers"
                         fi
                 done
+		echo "Creating more subfolders, giving them permissions and sorting the downloaded files"
 		mkdir -p "$ARCHIVOS_DEL_PROGRAMA"
-		echo "Subcarpeta Program_Files creada"
 		touch "$ARCHIVOS_DEL_PROGRAMA/SHELL_HISTORY"
 		chmod 777 "$ARCHIVOS_DEL_PROGRAMA/SHELL_HISTORY"
 		UNINSTALL="$CARPETA_USUARIO/Wallpapers/uninstall.sh"
@@ -73,6 +76,8 @@ if [ "$Respuesta" = "si" ]; then
 		COMMANDS="$CARPETA_USUARIO/Wallpapers/comandossc.sh"
 		mv "$COMMANDS" "$ARCHIVOS_DEL_PROGRAMA/"
 
+		echo "The installation is almost finished..."
+		echo "Creating aliases to facilitate the use of the system"
 		ALIAS_CMD_SENSE="alias SENSE='bash $ARCHIVOS_DEL_PROGRAMA/comandossc.sh'"
 		ALIAS_CMD="alias uninstall-sense='sudo bash $ARCHIVOS_DEL_PROGRAMA/uninstall.sh'"
         	if ! grep -Fxq "$ALIAS_CMD" /etc/bash.bashrc; then
@@ -81,9 +86,12 @@ if [ "$Respuesta" = "si" ]; then
 		if ! grep -Fxq "$ALIAS_CMD_SENSE" /etc/bash.bashrc; then
     			echo "$ALIAS_CMD_SENSE" | sudo tee -a /etc/bash.bashrc > /dev/null
 		fi
+		echo "Aliases created"
 		eval "$ALIAS_CMD_SENSE"
 		eval "$ALIAS_CMD"
+		echo "Installation completed"
+		echo "Enjoy SENSE "
 	done
-elif [ "$Respuesta" = "no" ]; then
-    	echo "Instalación cancelada."
+elif [ "$Respuesta" = "n" ]; then
+    	echo "Installation cancelled."
 fi
