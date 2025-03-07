@@ -90,6 +90,7 @@ if [ "$Respuesta" = "y" ]; then
 		eval "$ALIAS_CMD_SENSE"
 		eval "$ALIAS_CMD"
 		echo "Installation completed"
+		echo "We recommend that you restart the console to ensure that the changes have been applied."
 		echo "Enjoy SENSE "
 	done
 elif [ "$Respuesta" = "n" ]; then
