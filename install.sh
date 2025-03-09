@@ -18,7 +18,7 @@ Salir=0
 while [ $Salir -eq 0 ]; do
     	echo "Are you sure you want to install SENSE (y/n)?"
     	read Respuesta
-    	Respuesta=$(echo "$Respuesta" | tr 'A-Z' 'a-z')  # Convertir a minúsculas
+    	Respuesta=$(echo "$Respuesta" | tr 'A-Z' 'a-z')
     	if [[ "$Respuesta" == "y" || "$Respuesta" == "n" ]]; then
         	Salir=1
     	else
@@ -34,47 +34,47 @@ if [ "$Respuesta" = "y" ]; then
         	CARPETA_USUARIO="$usuario/$NOMBRE_CARPETA"
         	WALLPAPER_CARPETA="$CARPETA_USUARIO/Wallpapers"
 		ARCHIVOS_DEL_PROGRAMA="$CARPETA_USUARIO/Program_Files"
-        	mkdir -p "$CARPETA_USUARIO"
+        	sudo mkdir -p "$CARPETA_USUARIO"
         	echo "Folder created in: $CARPETA_USUARIO"
 
 		echo "Downloading files..."
         	while true; do
-            		git clone "$REPO_URL" "$CARPETA_USUARIO"
+            		sudo git clone "$REPO_URL" "$CARPETA_USUARIO"
             		if [ -f "$CARPETA_USUARIO/index.html" ]; then
                 		echo "Files downloaded in: $CARPETA_USUARIO"
                 		break
             		else
-                		rm -rf "$CARPETA_USUARIO"
+                		sudo rm -rf "$CARPETA_USUARIO"
             		fi
         	done
 		echo "Creating subfolders"
-		mkdir -p "$WALLPAPER_CARPETA"
+		sudo mkdir -p "$WALLPAPER_CARPETA"
 		echo "Subfolder created"
 		echo "Downloading images...."
 		while true; do
-                        git clone "$WALLPAPER_URL" "$CARPETA_USUARIO/Wallpapers"
+                        sudo git clone "$WALLPAPER_URL" "$CARPETA_USUARIO/Wallpapers"
 			ZIP_FILE=$(find "$CARPETA_USUARIO/Wallpapers" -name "*.zip" | head -n 1)
 
     			if [ -n "$ZIP_FILE" ]; then
-        			unzip -o "$ZIP_FILE" -d "$CARPETA_USUARIO/Wallpapers"
-        			rm "$ZIP_FILE"
+        			sudo unzip -o "$ZIP_FILE" -d "$CARPETA_USUARIO/Wallpapers"
+        			sudo rm "$ZIP_FILE"
     			fi
 
                         if [ -f "$CARPETA_USUARIO/Wallpapers/Wallpaper/Leonardo_Phoenix_09_Design_a_logo_for_SENSE_a_Unixbased_operat_3.jpg" ]; then
                                 echo "Downloaded and decompressed images"
                                 break
                         else
-                                rm -rf "$CARPETA_USUARIO/Wallpapers"
+                                sudo rm -rf "$CARPETA_USUARIO/Wallpapers"
                         fi
                 done
 		echo "Creating more subfolders, giving them permissions and sorting the downloaded files"
-		mkdir -p "$ARCHIVOS_DEL_PROGRAMA"
-		touch "$ARCHIVOS_DEL_PROGRAMA/SHELL_HISTORY"
-		chmod 777 "$ARCHIVOS_DEL_PROGRAMA/SHELL_HISTORY"
+		sudo mkdir -p "$ARCHIVOS_DEL_PROGRAMA"
+		sudo touch "$ARCHIVOS_DEL_PROGRAMA/SHELL_HISTORY"
+		sudo chmod 777 "$ARCHIVOS_DEL_PROGRAMA/SHELL_HISTORY"
 		UNINSTALL="$CARPETA_USUARIO/Wallpapers/uninstall.sh"
-		mv "$UNINSTALL" "$ARCHIVOS_DEL_PROGRAMA/"
+		sudo mv "$UNINSTALL" "$ARCHIVOS_DEL_PROGRAMA/"
 		COMMANDS="$CARPETA_USUARIO/Wallpapers/comandossc.sh"
-		mv "$COMMANDS" "$ARCHIVOS_DEL_PROGRAMA/"
+		sudo mv "$COMMANDS" "$ARCHIVOS_DEL_PROGRAMA/"
 
 		echo "The installation is almost finished..."
 		echo "Creating aliases to facilitate the use of the system"
@@ -89,10 +89,10 @@ if [ "$Respuesta" = "y" ]; then
 		echo "Aliases created"
 		eval "$ALIAS_CMD_SENSE"
 		eval "$ALIAS_CMD"
-		echo "Installation completed"
-		echo "We recommend that you restart the console to ensure that the changes have been applied."
-		echo "Enjoy SENSE "
 	done
+	echo "Installation completed"
+        echo "We recommend that you restart the console to ensure that the changes have been applied."
+        echo "Enjoy SENSE "
 elif [ "$Respuesta" = "n" ]; then
     	echo "Installation cancelled."
 fi
